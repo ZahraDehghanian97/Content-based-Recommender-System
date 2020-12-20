@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 import numpy as np
 from gensim.models import Word2Vec
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 test = pd.read_csv('test_users.csv', sep=',', header=None).values[0]
 book = pd.read_csv('books.csv', sep=',').values
@@ -30,12 +31,6 @@ def createMatrix(dataset):
     return utility_matrix
 
 
-def save_matrix():
-    utility_matrix = createMatrix(rating)
-    saveFileToPickle('utility.pkl', utility_matrix)
-    return
-
-
 def creatProfile(dataset):
     number_item = dataset.shape[0]
     profile_vector = []
@@ -48,13 +43,12 @@ def creatProfile(dataset):
 def save_profileModel():
     profile_vector = creatProfile(book)
     print(len(profile_vector))
-    books_model = Word2Vec(profile_vector, window=1, min_count=1, workers=7, size=len_model)
-    books_model.save("word2vec")
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(profile_vector)
+    saveFileToPickle("book.pkl",X.toarray())
     return
 
 
-# # save_matrix()
-# utility_matrix = loadFileFromPickle('utility.pkl')
-# len_model = 20
-save_profileModel()
-profileWord2Vec_model = Word2Vec.load("word2vec")
+utility_matrix = loadFileFromPickle('utility.pkl')
+# save_profileModel()
+book_feature = loadFileFromPickle("book.pkl")

@@ -1,6 +1,6 @@
 from math import sqrt
 from numpy import average
-from utilities import test, book_model , utility_matrix,len_model
+from utilities import test, book_feature , utility_matrix
 import numpy as np
 
 
@@ -20,9 +20,9 @@ def cosine_similarity(person1_dataset, person2_dataset):
 
 
 def find_average(test_user):
-    item_test_user = np.zeros([len_model])
+    item_test_user = np.zeros([len(book_feature[0])])
     for i in range(number_item):
-        item_test_user += book_model[i]*utility_matrix[test_user,i]
+        item_test_user += book_feature[i]*utility_matrix[test_user,i+1]
     item_test_user/= sum(utility_matrix[test_user])
     return item_test_user
 
@@ -30,7 +30,7 @@ def find_average(test_user):
 def most_similar_book(average_book):
     scores = []
     for i in range(number_item):
-        scores.append([cosine_similarity(average_book,book_model[i]), i])
+        scores.append([cosine_similarity(average_book,book_feature[i]), i])
     return sorted(scores, key=lambda t: t[0], reverse=True)
 
 
@@ -50,11 +50,10 @@ def content_based():
             if counter_book == 5:
                 break
 
-print(len(book_model))
 print("load pickle file finished")
 number_user = len(utility_matrix)
-number_item = len(utility_matrix[0])
+number_item = len(book_feature)
 print("number user = " + str(number_user - 1))
-print("number item = " + str(number_item - 1))
+print("number item = " + str(number_item ))
 content_based()
 
