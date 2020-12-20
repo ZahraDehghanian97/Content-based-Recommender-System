@@ -1,12 +1,11 @@
 import pickle
 import pandas as pd
 import numpy as np
-from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 test = pd.read_csv('test_users.csv', sep=',', header=None).values[0]
 book = pd.read_csv('books.csv', sep=',').values
-# rating = pd.read_csv('ratings.csv', sep=',').values
+rating = pd.read_csv('ratings.csv', sep=',').values
 
 
 def saveFileToPickle(fileName, object):
@@ -23,11 +22,11 @@ def loadFileFromPickle(fileName):
 
 # creates dictionary of users and books
 def createMatrix(dataset):
-    number_user = max(dataset[:, 1]) +1
-    number_item = max(dataset[:, 0]) +1
+    number_user = max(dataset[:, 1])
+    number_item = max(dataset[:, 0])
     utility_matrix = np.zeros([number_user, number_item])
     for row in range(0, np.shape(dataset)[0]):
-        utility_matrix[dataset[row][1], dataset[row][0]] = dataset[row][2]
+        utility_matrix[dataset[row][1]-1, dataset[row][0]-1] = dataset[row][2]
     return utility_matrix
 
 
@@ -49,6 +48,13 @@ def save_profileModel():
     return
 
 
+
+def save_matrix():
+    utility_matrix = createMatrix(rating)
+    saveFileToPickle('utility.pkl', utility_matrix)
+    return
+
+# save_matrix()
 utility_matrix = loadFileFromPickle('utility.pkl')
 # save_profileModel()
 book_feature = loadFileFromPickle("book.pkl")
