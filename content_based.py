@@ -31,14 +31,16 @@ def find_average(test_user):
 def find_normalized_average(test_user):
     item_test_user = np.zeros([len(book_feature[0])])
     average = sum(utility_matrix[test_user]) / np.count_nonzero(utility_matrix[test_user])
-    counter = 0
     for i in range(number_item):
         if utility_matrix[test_user, i] > 0 :
-            print(i)
             item_test_user += book_feature[i] * (utility_matrix[test_user, i] - average)
-
-    # item_test_user = item_test_user / counter
-    return item_test_user
+    item_test_user = item_test_user
+    for i in range(len(item_test_user)):
+        if item_test_user[i] != 0 :
+            return item_test_user
+    print("this user get equal score to all book")
+    print("instead of normalized score use simple score...")
+    return find_average(test_user)
 
 
 def most_similar_book(average_book):
